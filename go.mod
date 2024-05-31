@@ -1,6 +1,6 @@
 module github.com/FatWang1/fatwang-go-utils
 
-go 1.18.0
+go 1.18
 
 require github.com/satori/go.uuid v1.2.0
 
