@@ -2,8 +2,7 @@ package bitmap
 
 import (
 	"math"
-	"runtime"
-	"sync"
+	"reflect"
 	"testing"
 )
 
@@ -30,17 +29,163 @@ func BenchmarkBitMap_Del(b *testing.B) {
 	}
 }
 
-func TestQuestion(t *testing.T) {
-	runtime.GOMAXPROCS(1)
+var (
+	defaultMax uint = 8192
+	size            = (defaultMax + 7) >> 3
+)
 
-	var wg sync.WaitGroup
-
-	for i := 1; i <= 1024; i++ {
-		wg.Add(1)
-		go func(n int) {
-			defer wg.Done()
-			println(n)
-		}(i)
+func TestNewBitMap(t *testing.T) {
+	type args struct {
+		max uint
 	}
-	wg.Wait()
+	tests := []struct {
+		name string
+		args args
+		want *bitMap
+	}{
+		{
+			name: "all is ok",
+			args: args{
+				max: defaultMax,
+			},
+			want: &bitMap{vmax: defaultMax, graph: make([]byte, size, size)},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewBitMap(tt.args.max); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewBitMap() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_bitMap_Check(t *testing.T) {
+	type fields struct {
+		vmax  uint
+		graph []byte
+	}
+	type args struct {
+		num uint
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   bool
+	}{
+		{
+			name: "all is ok",
+			fields: fields{
+				vmax:  defaultMax,
+				graph: make([]byte, size, size),
+			},
+			args: args{
+				num: 1024,
+			},
+			want: false,
+		},
+		{
+			name: "oversize",
+			fields: fields{
+				vmax:  defaultMax,
+				graph: make([]byte, size, size),
+			},
+			args: args{
+				num: 8193,
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			b := &bitMap{
+				vmax:  tt.fields.vmax,
+				graph: tt.fields.graph,
+			}
+			if got := b.Check(tt.args.num); got != tt.want {
+				t.Errorf("Check() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_bitMap_Del(t *testing.T) {
+	type fields struct {
+		vmax  uint
+		graph []byte
+	}
+	type args struct {
+		num uint
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			name: "all is ok",
+			fields: fields{
+				vmax:  defaultMax,
+				graph: make([]byte, size, size),
+			},
+			args: args{
+				num: 1024,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			b := &bitMap{
+				vmax:  tt.fields.vmax,
+				graph: tt.fields.graph,
+			}
+			b.Del(tt.args.num)
+		})
+	}
+}
+
+func Test_bitMap_Set(t *testing.T) {
+	type fields struct {
+		vmax  uint
+		graph []byte
+	}
+	type args struct {
+		num uint
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			name: "all is ok",
+			fields: fields{
+				vmax:  defaultMax,
+				graph: make([]byte, size, size),
+			},
+			args: args{
+				num: 1024,
+			},
+		},
+		{
+			name: "oversize",
+			fields: fields{
+				vmax:  defaultMax,
+				graph: make([]byte, size, size),
+			},
+			args: args{
+				num: 9217,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			b := &bitMap{
+				vmax:  tt.fields.vmax,
+				graph: tt.fields.graph,
+			}
+			b.Set(tt.args.num)
+		})
+	}
 }
