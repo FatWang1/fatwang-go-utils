@@ -1,50 +1,80 @@
 package tire
 
-const (
-	//ALBHABET_SIZE total characters in english alphabet
-	ALBHABET_SIZE = 26
+import (
+	"gopkg.in/errgo.v2/errors"
 )
 
 type trieNode struct {
-	childrens [ALBHABET_SIZE]*trieNode
+	children  []*trieNode
 	isWordEnd bool
 }
 
 type trie struct {
-	root *trieNode
+	root      *trieNode
+	headChar  byte
+	cnt       int
+	charIndex func(byte) int
 }
 
-func InitTrie() *trie {
-	return &trie{
-		root: &trieNode{},
+var (
+	ErrInvalidChar = errors.New("invalid char")
+)
+
+func InitTrie(cnt int, headChar byte, charIndex func(byte) int) *trie {
+	t := &trie{
+		root: &trieNode{
+			children: make([]*trieNode, cnt, cnt),
+		},
+		headChar:  headChar,
+		cnt:       cnt,
+		charIndex: charIndex,
 	}
+	if t.charIndex == nil {
+		t.charIndex = t.defaultIndex
+	}
+	return t
 }
 
-func (t *trie) insert(word string) {
+func (t *trie) insert(word string) error {
 	wordLength := len(word)
 	current := t.root
 	for i := 0; i < wordLength; i++ {
-		index := word[i] - 'a'
-		if current.childrens[index] == nil {
-			current.childrens[index] = &trieNode{}
+		if index := t.charIndex(word[i]); index != -1 {
+			if current.children[index] == nil {
+				current.children[index] = &trieNode{
+					children: make([]*trieNode, t.cnt, t.cnt),
+				}
+			}
+			current = current.children[index]
+		} else {
+			return ErrInvalidChar
 		}
-		current = current.childrens[index]
 	}
 	current.isWordEnd = true
+	return nil
+}
+
+func (t *trie) defaultIndex(char byte) int {
+	idx := int(char - t.headChar)
+	// confirm char must be in range
+	if idx >= 0 && idx < cap(t.root.children) {
+		return idx
+	}
+	return -1
 }
 
 func (t *trie) find(word string) bool {
 	wordLength := len(word)
 	current := t.root
 	for i := 0; i < wordLength; i++ {
-		index := word[i] - 'a'
-		if current.childrens[index] == nil {
+		if index := t.charIndex(word[i]); index != -1 {
+			if current.children[index] == nil {
+				return false
+			}
+			current = current.children[index]
+		} else {
 			return false
 		}
-		current = current.childrens[index]
 	}
-	if current.isWordEnd {
-		return true
-	}
-	return false
+	return current.isWordEnd
 }

@@ -6,7 +6,7 @@ type UnionFind struct {
 	count  int
 }
 
-func InitialUF(n int) *UnionFind {
+func InitUnionFind(n int) *UnionFind {
 	// 初始时，总共有n个分组
 	uf := &UnionFind{count: n}
 	uf.parent = make([]int, n)
@@ -29,13 +29,13 @@ func (u *UnionFind) Find(x int) int {
 	return u.parent[x]
 }
 
-func (u *UnionFind) Find1(x int) int {
-	for x != u.parent[x] {
-		u.parent[x] = u.parent[u.parent[u.parent[x]]]
-		x = u.parent[x]
-	}
-	return x
-}
+//func (u *UnionFind) Find1(x int) int {
+//	for x != u.parent[x] {
+//		u.parent[x] = u.parent[u.parent[x]]
+//		x = u.parent[x]
+//	}
+//	return x
+//}
 
 // Union 合并两个分组
 func (u *UnionFind) Union(x, y int) {
