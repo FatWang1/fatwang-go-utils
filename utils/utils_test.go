@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"context"
+	"github.com/openzipkin/zipkin-go"
 	"reflect"
 	"testing"
 )
@@ -59,6 +61,33 @@ func TestTernaryOperator(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := TernaryOperator(tt.args.expr, tt.args.trueVal, tt.args.falseVal); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("TernaryOperator() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestContextCopy(t *testing.T) {
+	type args struct {
+		ctx context.Context
+	}
+	ctx := context.Background()
+	tests := []struct {
+		name string
+		args args
+		want context.Context
+	}{
+		{
+			name: "all is ok",
+			args: args{
+				ctx: ctx,
+			},
+			want: zipkin.NewContext(ctx, zipkin.SpanOrNoopFromContext(ctx)),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ContextCopy(tt.args.ctx); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ContextCopy() = %v, want %v", got, tt.want)
 			}
 		})
 	}

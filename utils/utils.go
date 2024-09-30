@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"context"
 	"strings"
 
+	"github.com/openzipkin/zipkin-go"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -16,4 +18,8 @@ func TernaryOperator[T any](expr bool, trueVal, falseVal T) T {
 	} else {
 		return falseVal
 	}
+}
+
+func ContextCopy(ctx context.Context) context.Context {
+	return zipkin.NewContext(context.Background(), zipkin.SpanOrNoopFromContext(ctx))
 }
