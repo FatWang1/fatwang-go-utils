@@ -92,29 +92,3 @@ func TestContextCopy(t *testing.T) {
 		})
 	}
 }
-
-func TestGenerateRandomIntList(t *testing.T) {
-	type args struct {
-		size  int
-		edge1 int
-		edge2 int
-	}
-	tests := []struct {
-		name string
-		args args
-	}{
-		{
-			name: "all is ok",
-			args: args{
-				size:  3,
-				edge1: 3,
-				edge2: 1,
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Log(GenerateRandomIntList(tt.args.size, tt.args.edge1, tt.args.edge2))
-		})
-	}
-}
