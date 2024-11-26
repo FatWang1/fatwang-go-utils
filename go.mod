@@ -1,6 +1,8 @@
 module github.com/FatWang1/fatwang-go-utils
 
-go 1.18
+go 1.22.0
+
+toolchain go1.22.2
 
 require (
 	github.com/go-test/deep v1.1.1
