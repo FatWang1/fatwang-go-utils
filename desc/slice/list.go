@@ -17,21 +17,8 @@ func GetItem[T any](idx int, list []T) T {
 	return list[idx]
 }
 
-// 移除list中的元素 不改变元素顺序
-func RemoveListElement[T comparable](list []T, val T) []T {
-	var newList = make([]T, len(list), len(list))
-	left := 0
-	for _, v := range list {
-		if v != val {
-			newList[left] = v
-			left++
-		}
-	}
-	return newList[0:left]
-}
-
-// 移除list中的元素 原地交换省内存性能好 改变元素顺序
-func RemoveListElementInPlace[T comparable](list []T, val T) []T {
+// 移除list中的元素 原地交换省内存性能好
+func RemoveItemByValue[T comparable](list []T, val T) []T {
 	left, right := 0, 0
 	for right < len(list) {
 		if list[right] != val {
@@ -41,4 +28,26 @@ func RemoveListElementInPlace[T comparable](list []T, val T) []T {
 		right++
 	}
 	return list[:left]
+}
+
+func InsertItems[T comparable](list []T, idx int, vals ...T) []T {
+	if idx < 0 || idx > len(list) {
+		return list
+	}
+	if idx == len(list) {
+		return append(list, vals...)
+	}
+	length := len(list) + len(vals)
+	if cap(list) > length {
+		list = list[:length]
+		copy(list[idx+len(vals):], list[idx:])
+		copy(list[idx:], vals)
+	} else {
+		newList := make([]T, length)
+		copy(newList, list[:idx])
+		copy(newList[idx:], vals)
+		copy(newList[idx+len(vals):], list[idx:])
+		list = newList
+	}
+	return list
 }

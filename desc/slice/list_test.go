@@ -93,9 +93,9 @@ func TestRemoveListElement(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got := RemoveListElement(test.list, test.val)
+		got := RemoveItemByValue(test.list, test.val)
 		if !reflect.DeepEqual(got, test.want) {
-			t.Errorf("RemoveListElement(%v, %v) = %v; want %v", test.list, test.val, got, test.want)
+			t.Errorf("RemoveItemByValue(%v, %v) = %v; want %v", test.list, test.val, got, test.want)
 		}
 	}
 }
@@ -113,9 +113,9 @@ func TestRemoveListElementInPlace(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got := RemoveListElementInPlace(test.list, test.val)
+		got := RemoveItemByValueInPlace(test.list, test.val)
 		if !reflect.DeepEqual(got, test.want) {
-			t.Errorf("RemoveListElementInPlace(%v, %v) = %v; want %v", test.list, test.val, got, test.want)
+			t.Errorf("RemoveItemByValueInPlace(%v, %v) = %v; want %v", test.list, test.val, got, test.want)
 		}
 	}
 }
