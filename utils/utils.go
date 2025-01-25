@@ -35,3 +35,11 @@ func GenerateRandomIntList(size int, edge1, edge2 int) []int {
 	}
 	return list
 }
+
+func Max[T NUMBER](m, n T) T {
+	return TernaryOperator(m > n, m, n)
+}
+
+func Min[T NUMBER](m, n T) T {
+	return TernaryOperator(m < n, m, n)
+}
