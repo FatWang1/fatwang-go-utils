@@ -2,9 +2,10 @@ package utils
 
 import (
 	"context"
-	"github.com/openzipkin/zipkin-go"
 	"reflect"
 	"testing"
+
+	"github.com/openzipkin/zipkin-go"
 )
 
 func TestGetUuid(t *testing.T) {
@@ -115,6 +116,64 @@ func TestGenerateRandomIntList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Log(GenerateRandomIntList(tt.args.size, tt.args.edge1, tt.args.edge2))
+		})
+	}
+}
+
+func TestMax(t *testing.T) {
+	type args[T NUMBER] struct {
+		m T
+		n T
+	}
+	type testCase[T NUMBER] struct {
+		name string
+		args args[T]
+		want T
+	}
+	tests := []testCase[int]{
+		{
+			name: "all is ok",
+			args: args[int]{
+				m: 1,
+				n: 0,
+			},
+			want: 1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Max(tt.args.m, tt.args.n); got != tt.want {
+				t.Errorf("Max() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMin(t *testing.T) {
+	type args[T NUMBER] struct {
+		m T
+		n T
+	}
+	type testCase[T NUMBER] struct {
+		name string
+		args args[T]
+		want T
+	}
+	tests := []testCase[int]{
+		{
+			name: "all is ok",
+			args: args[int]{
+				m: 1,
+				n: 0,
+			},
+			want: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Min(tt.args.m, tt.args.n); got != tt.want {
+				t.Errorf("Min() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
