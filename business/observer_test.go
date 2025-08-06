@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/FatWang1/fatwang-go-utils/internal/logger"
+	"github.com/FatWang1/fatwang-go-utils/utils"
 )
 
 func TestNewEvent(t *testing.T) {
@@ -71,7 +71,7 @@ func Test_event_Emit(t *testing.T) {
 		{
 			name: "all is ok",
 			e: event[int]{
-				logger: logger.NewNoop(),
+				logger: utils.MustNewDevelopment(),
 				observerList: []Cfg[int]{
 					{
 						IsAsync: true,
@@ -99,7 +99,7 @@ func Test_event_Emit(t *testing.T) {
 		{
 			name: "sync failed",
 			e: event[int]{
-				logger: logger.NewNoop(),
+				logger: utils.MustNewDevelopment(),
 				observerList: []Cfg[int]{
 					{
 						IsAsync: true,

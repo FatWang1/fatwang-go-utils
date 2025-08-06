@@ -1,10 +1,42 @@
 package logger
 
 import (
+	"github.com/FatWang1/fatwang-go-utils/utils"
 	"reflect"
 	"testing"
 )
 
+func (n *noop) WithField(key string, value interface{}) utils.Logger {
+	return n
+}
+
+func (n *noop) Debugf(format string, args ...interface{}) {}
+
+func (n *noop) Infof(format string, args ...interface{}) {}
+
+func (n *noop) Warnf(format string, args ...interface{}) {}
+
+func (n *noop) Errorf(format string, args ...interface{}) {}
+
+func (n *noop) Fatalf(format string, args ...interface{}) {}
+
+func (n *noop) Panicf(format string, args ...interface{}) {}
+
+func (n *noop) Debug(args ...interface{}) {}
+
+func (n *noop) Info(args ...interface{}) {}
+
+func (n *noop) Warn(args ...interface{}) {}
+
+func (n *noop) Error(args ...interface{}) {}
+
+func (n *noop) Fatal(args ...interface{}) {}
+
+func (n *noop) Panic(args ...interface{}) {}
+
+func (n *noop) Flush() error {
+	return nil
+}
 func TestNewNoop(t *testing.T) {
 	tests := []struct {
 		name string
