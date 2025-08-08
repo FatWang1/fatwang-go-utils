@@ -3,11 +3,11 @@ package observer
 import (
 	"context"
 	"errors"
-	"reflect"
 	"testing"
 	"time"
 
-	"github.com/FatWang1/fatwang-go-utils/internal/logger"
+	"github.com/FatWang1/fatwang-go-utils/utils"
+	"github.com/go-test/deep"
 )
 
 func TestNewEvent(t *testing.T) {
@@ -49,7 +49,8 @@ func TestNewEvent(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewEvent(tt.args.observers...); !reflect.DeepEqual(got, tt.want) {
+			got := NewEvent(utils.MustNewDevelopment(), tt.args.observers...)
+			if diff := deep.Equal(got, tt.want); diff != nil {
 				t.Errorf("NewEvent() = %v, want %v", got, tt.want)
 			}
 		})
@@ -71,7 +72,7 @@ func Test_event_Emit(t *testing.T) {
 		{
 			name: "all is ok",
 			e: event[int]{
-				logger: logger.NewNoop(),
+				logger: utils.MustNewDevelopment(),
 				observerList: []Cfg[int]{
 					{
 						IsAsync: true,
@@ -99,7 +100,7 @@ func Test_event_Emit(t *testing.T) {
 		{
 			name: "sync failed",
 			e: event[int]{
-				logger: logger.NewNoop(),
+				logger: utils.MustNewDevelopment(),
 				observerList: []Cfg[int]{
 					{
 						IsAsync: true,

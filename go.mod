@@ -6,6 +6,7 @@ toolchain go1.24.5
 
 require (
 	github.com/go-test/deep v1.1.1
+	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
 	github.com/openzipkin/zipkin-go v0.4.3
 	go.uber.org/zap v1.27.0
