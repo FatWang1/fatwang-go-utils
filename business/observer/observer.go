@@ -1,8 +1,9 @@
-package business
+package observer
 
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/FatWang1/fatwang-go-utils/utils"
 )
@@ -21,17 +22,22 @@ type Event[P any] interface {
 }
 
 type event[P any] struct {
-	logger       utils.InfoLogger
+	logger       utils.Logger
+	mu           sync.RWMutex
 	observerList []Cfg[P]
 }
 
-func NewEvent[P any](observers ...Cfg[P]) Event[P] {
+func NewEvent[P any](logger utils.Logger, observers ...Cfg[P]) Event[P] {
 	return &event[P]{
+		logger:       logger,
+		mu:           sync.RWMutex{},
 		observerList: observers,
 	}
 }
 
 func (e *event[P]) Register(observers ...Cfg[P]) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
 	e.observerList = append(e.observerList, observers...)
 }
 
@@ -46,7 +52,7 @@ func (e *event[P]) Emit(ctx context.Context, params P) error {
 			e.logger.Info(fmt.Sprintf("[emit] async event: %s", o.Name))
 			go func(do Action[P], name string) {
 				if err := do(utils.ContextCopy(ctx), params); err != nil {
-					e.logger.Info(fmt.Sprintf("exec %s failed, err = %v", name, err))
+					e.logger.Errorf(fmt.Sprintf("exec %s failed, err = %v", name, err))
 				}
 			}(o.Action, o.Name)
 		}

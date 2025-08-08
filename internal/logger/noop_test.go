@@ -1,9 +1,10 @@
 package logger
 
 import (
-	"github.com/FatWang1/fatwang-go-utils/utils"
 	"reflect"
 	"testing"
+
+	"github.com/FatWang1/fatwang-go-utils/utils"
 )
 
 func (n *noop) WithField(key string, value interface{}) utils.Logger {
